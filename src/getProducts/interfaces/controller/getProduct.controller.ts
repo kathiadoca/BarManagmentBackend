@@ -10,10 +10,10 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { GetOrderService } from '../../application/getOrder.service';
 import { ProcessTimeService } from '../../../share/domain/config/processTime.service';
 import { ApiResponseDto } from '../../../share/domain/dto/apiResponse.dto';
 import { JwtAuthGuard } from 'src/auth/application/jwt-auth.guard';
+import { GetOrderService } from 'src/getProducts/application/getProducts.service';
 
 /**
  *  @description Archivo controlador responsable de manejar las solicitudes entrantes que llegan a un end point.
@@ -43,7 +43,6 @@ export class CreateOrderController {
     @Res() res: Response,
     @Param('reference') reference: string,
   ): Promise<void> {
-    console.log('controlador', reference);
     const processTime = this.processTimeService.start();
     try {
       this.logger.log('Controller request message', {
@@ -51,7 +50,7 @@ export class CreateOrderController {
         transactionId: this.transactionId,
       });
       const serviceResponse = await this.service.getOrder(reference);
-      res.status(serviceResponse.responseCode).json(serviceResponse);
+      res.status(serviceResponse.statusCode).json(serviceResponse);
     } finally {
       this.logger.log(`Consumo del servicio finalizado`, {
         totalProcessTime: processTime.end(),

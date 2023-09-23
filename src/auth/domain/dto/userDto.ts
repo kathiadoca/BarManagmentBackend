@@ -4,29 +4,33 @@ import { IsNotEmpty } from 'class-validator';
 export class UserDTO {
   @ApiProperty()
   @IsNotEmpty()
-  name: string;
+  Nombre: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  email: string;
+  Apellido: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  phone: string;
+  Telefono: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  country: string;
+  Direccion: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  city: string;
+  Usuario: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  username: string;
+  Clave: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  password: string;
+  Sede: string;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  Rol: string;
 }

@@ -17,6 +17,7 @@ import { User, UserDocument } from '../../share/domain/dto/user.entity';
 import { hash, compare } from 'bcrypt';
 import { LoginAuthDto } from '../domain/dto/login-auth.dto';
 import { JwtService } from '@nestjs/jwt';
+import { LoginDto } from '../domain/dto/loginDto';
 
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
@@ -37,18 +38,18 @@ export class AuthService {
 
   async register(userDTO: UserDTO): Promise<ApiResponseDto> {
     try {
-      const userDb = await this.findOne(userDTO.username);
+      const userDb = await this.findOne(userDTO.Usuario);
       if (userDb)
         return new ApiResponseDto(
           HttpStatus.FORBIDDEN,
           'User already exists',
           userDb,
         );
-      const { password } = userDTO;
-      const plaintToHash = await hash(password, 10);
+      const { Clave } = userDTO;
+      const plaintToHash = await hash(Clave, 10);
       userDTO = {
         ...userDTO,
-        password: plaintToHash,
+        Clave: plaintToHash,
       };
       this.logger.log('obtaing user ', {
         transactionId: this.transactionId,
@@ -71,28 +72,28 @@ export class AuthService {
     }
   }
 
-  async login(userDTO: UserDTO): Promise<ApiResponseDto> {
+  async login(userDTO: LoginDto): Promise<ApiResponseDto> {
     try {
-      const { username, password } = userDTO;
-      const findUser = await this.findOne(username);
+      const { Usuario, Clave } = userDTO;
+      const findUser = await this.findOne(Usuario);
       if (!findUser)
         return new ApiResponseDto(
           HttpStatus.NOT_FOUND,
           'User not exists',
           findUser,
         );
-      const checkPassword = await compare(password, findUser.password);
+      const checkPassword = await compare(Clave, findUser.Clave);
       if (!checkPassword)
         return new ApiResponseDto(HttpStatus.FORBIDDEN, 'Password invalid');
       this.logger.log('obtaing user ', {
         transactionId: this.transactionId,
         response: userDTO,
       });
-      const payload = { id: findUser._id, name: findUser.name };
+      const payload = { id: findUser._id, name: findUser.Nombre };
       const token = await this.jwtAuthService.sign(payload);
       const user = new LoginAuthDto(
-        findUser.username,
-        findUser.password,
+        findUser.Usuario,
+        findUser.Clave,
         token,
       );
       return new ApiResponseDto(201, 'Ok', user);
@@ -116,7 +117,7 @@ export class AuthService {
    *
    *
    */
-  async findOne(username: string): Promise<UserDocument | undefined> {
-    return this.userModel.findOne({ username }).exec();
+  async findOne(Usuario: string): Promise<UserDocument | undefined> {
+    return this.userModel.findOne({ Usuario }).exec();
   }
 }

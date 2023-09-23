@@ -6,6 +6,7 @@ import { AuthService } from '../../application/auth.service';
 import { ProcessTimeService } from '../../../share/domain/config/processTime.service';
 import { ApiResponseDto } from '../../../share/domain/dto/apiResponse.dto';
 import { UserDTO } from 'src/auth/domain/dto/userDto';
+import { LoginDto } from 'src/auth/domain/dto/loginDto';
 
 /**
  *  @description Archivo controlador responsable de manejar las solicitudes entrantes que llegan a un end point.
@@ -34,14 +35,13 @@ export class AuthController {
     @Body() body: UserDTO,
     @Res() res: Response,
   ): Promise<void> {
-    console.log(body);
     const processTime = this.processTimeService.start();
     try {
       this.logger.log('Controller request message', {
         transactionId: this.transactionId,
       });
       const serviceResponse = await this.service.register(body);
-      res.status(serviceResponse.responseCode).json(serviceResponse);
+      res.status(serviceResponse.statusCode).json(serviceResponse);
     } finally {
       this.logger.log(`Consumo del servicio finalizado`, {
         totalProcessTime: processTime.end(),
@@ -55,7 +55,7 @@ export class AuthController {
     status: 201,
   })
   @Post('login')
-  async loginUser(@Body() body: UserDTO, @Res() res: Response): Promise<void> {
+  async loginUser(@Body() body: LoginDto, @Res() res: Response): Promise<void> {
     const processTime = this.processTimeService.start();
     try {
       this.logger.log('Controller request message', {
@@ -63,7 +63,7 @@ export class AuthController {
         transactionId: this.transactionId,
       });
       const serviceResponse = await this.service.login(body);
-      res.status(serviceResponse.responseCode).json(serviceResponse);
+      res.status(serviceResponse.statusCode).json(serviceResponse);
     } finally {
       this.logger.log(`Consumo del servicio finalizado`, {
         totalProcessTime: processTime.end(),

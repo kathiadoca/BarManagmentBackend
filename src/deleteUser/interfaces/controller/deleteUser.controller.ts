@@ -40,7 +40,7 @@ export class DeleteUserController {
         transactionId: this.transactionId,
       });
       const serviceResponse = await this.service.delete(username);
-      res.status(serviceResponse.responseCode).json(serviceResponse);
+      res.status(serviceResponse.statusCode).json(serviceResponse);
     } finally {
       this.logger.log(`Consumo del servicio finalizado`, {
         totalProcessTime: processTime.end(),

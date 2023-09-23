@@ -2,15 +2,15 @@ import { ApiProperty } from '@nestjs/swagger';
 
 export class ApiResponseDto {
   @ApiProperty()
-  responseCode: number;
+  statusCode: number;
 
   @ApiProperty()
   message: string;
 
   data?: any;
 
-  constructor(responseCode: number, message: string, data?: any) {
-    this.responseCode = responseCode;
+  constructor(statusCode: number, message: string, data?: any) {
+    this.statusCode = statusCode;
     this.message = message;
     this.data = data;
   }

@@ -15,7 +15,7 @@ import config from '../../share/domain/resources/env.config';
 import { ApiResponseDto } from '../../share/domain/dto/apiResponse.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Order, OrderDocument } from '../domain/dto/order.entity';
+import { Order, OrderDocument } from '../domain/dto/product.entity';
 
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
@@ -44,7 +44,6 @@ export class GetOrderService {
 
   public async getOrder(reference: string): Promise<ApiResponseDto> {
     try {
-      console.log(reference);
       //Obtiene el usuario de la base de datos
       const userDb = await this.findOne(reference);
       //if (userDb) throw new ConflictException('User already exists');
