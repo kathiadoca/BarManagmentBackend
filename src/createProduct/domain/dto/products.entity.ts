@@ -9,16 +9,19 @@ export class Productos extends Document {
   id_Producto: number;
 
   @Prop({ required: true })
-  nombre_Producto: string;
+  Nombre: string;
 
   @Prop({ required: true })
-  costo: number;
+  Costo: number;
 
   @Prop({ required: true })
-  precio_Venta: number;
+  Precio_venta: number;
 
   @Prop({ required: true })
-  cantidad: number;
+  Cantidad: number;
+
+  @Prop({ required: true })
+  Sede: string;
 }
 
 export const ProductosSchema = SchemaFactory.createForClass(Productos);

@@ -9,17 +9,21 @@ export class ProductsDTO {
 
   @ApiProperty()
   @IsNotEmpty()
-  nombre_Producto: string;
+  Nombre: string;
 
   @ApiProperty()
   @IsNotEmpty()
-  costo: number;
+  Costo: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  precio_Venta: number;
+  Precio_venta: number;
 
   @ApiProperty()
   @IsNotEmpty()
-  cantidad: number;
+  Cantidad: number;
+
+  @ApiProperty()
+  @IsNotEmpty()
+  Sede: string;
 }

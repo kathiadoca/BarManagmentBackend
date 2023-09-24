@@ -38,7 +38,7 @@ export class CreateOrderController {
     type: ApiResponseDto,
     status: 200,
   })
-  //@UseGuards(JwtAuthGuard)
+  @UseGuards(JwtAuthGuard)
   @Post()
   async createUser(
     @Res() res: Response,
