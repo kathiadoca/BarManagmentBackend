@@ -32,5 +32,5 @@ export class UserDTO {
 
   @ApiProperty()
   @IsNotEmpty()
-  Rol: string;
+  Rol: number;
 }
