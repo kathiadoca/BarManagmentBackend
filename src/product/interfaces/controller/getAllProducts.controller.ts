@@ -3,7 +3,7 @@ import {
   Get,
   Inject,
   Logger,
-  Param,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -12,20 +12,23 @@ import { Response } from 'express';
 
 import { ProcessTimeService } from '../../../share/domain/config/processTime.service';
 import { ApiResponseDto } from '../../../share/domain/dto/apiResponse.dto';
-import { JwtAuthGuard } from 'src/auth/application/jwt-auth.guard';
-import { GetOrderService } from 'src/getProducts/application/getProducts.service';
+import { JwtAuthGuard } from '../../../auth/application/jwt-auth.guard';
+import { RolesGuard } from '../../../auth/application/roles.guard';
+import { Roles } from '../../../auth/application/roles.decorator';
+import { ProductsDTO } from '../../domain/dto/productsDto';
+import { GetOrderService } from 'src/product/application/getProducts.service';
 
 /**
  *  @description Archivo controlador responsable de manejar las solicitudes entrantes que llegan a un end point.
  *  En este caso seran posible acceder por medio de metodos http
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
-@ApiTags('create')
-@Controller('order/getOder')
-export class CreateOrderController {
-  private readonly logger = new Logger(CreateOrderController.name);
+@ApiTags('get')
+@Controller('products/getAllProducts')
+export class GetAllProductsController {
+  private readonly logger = new Logger(GetAllProductsController.name);
   @Inject('TransactionId') private readonly transactionId: string;
 
   constructor(
@@ -37,19 +40,19 @@ export class CreateOrderController {
     type: ApiResponseDto,
     status: 200,
   })
-  @UseGuards(JwtAuthGuard)
-  @Get('/:reference')
-  async getOrder(
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Get()
+  @Roles('administrador', 'cajero')
+  async getProducts(
     @Res() res: Response,
-    @Param('reference') reference: string,
   ): Promise<void> {
     const processTime = this.processTimeService.start();
     try {
       this.logger.log('Controller request message', {
-        request: reference,
+        request: '',
         transactionId: this.transactionId,
       });
-      const serviceResponse = await this.service.getOrder(reference);
+      const serviceResponse = await this.service.getProduct();
       res.status(serviceResponse.statusCode).json(serviceResponse);
     } finally {
       this.logger.log(`Consumo del servicio finalizado`, {

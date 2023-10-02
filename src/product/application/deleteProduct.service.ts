@@ -15,47 +15,36 @@ import config from '../../share/domain/resources/env.config';
 import { ApiResponseDto } from '../../share/domain/dto/apiResponse.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { Order, OrderDocument } from '../domain/dto/product.entity';
+import { Productos, ProductosDocument } from '../domain/dto/products.entity';
+import { IdProductsDTO } from '../domain/dto/idProductsDto';
 
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
 @Injectable()
-export class GetOrderService {
-  private readonly logger = new Logger(GetOrderService.name);
+export class DeleteProductService {
+  private readonly logger = new Logger(DeleteProductService.name);
   @Inject('TransactionId') private readonly transactionId: string;
 
   constructor(
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
-    @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
+    @InjectModel(Productos.name) private productModel: Model<ProductosDocument>,
   ) {}
 
-  /**
-   *  @description Metodo para buscar un usuario por 'username' en la base de datos
-   *
-   *
-   */
-  async findOne(reference: string): Promise<OrderDocument | undefined> {
-    return this.orderModel.findOne({ reference }).exec();
-  }
-
-  public async getOrder(reference: string): Promise<ApiResponseDto> {
+  public async deleteProduct(product: IdProductsDTO): Promise<ApiResponseDto> {
     try {
       //Obtiene el usuario de la base de datos
-      const userDb = await this.findOne(reference);
-      //if (userDb) throw new ConflictException('User already exists');
-
-      //const userCreated = await this.orderModel.create(reference);
-
+      let id_Producto = product.id_Producto;
+      const update = await this.productModel.deleteOne({ id_Producto }, product);
       this.logger.log('create order request', {
-        request: reference,
+        request: `${product.id_Producto}`,
         transactionId: this.transactionId,
-        response: userDb,
+        response: update,
       });
-      return new ApiResponseDto(HttpStatus.OK, OK, userDb);
+      return new ApiResponseDto(HttpStatus.OK, OK, update);
     } catch (error) {
       this.logger.error(error.message, {
         transactionId: this.transactionId,

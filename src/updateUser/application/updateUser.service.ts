@@ -23,7 +23,7 @@ import { User, UserDocument } from '../../share/domain/dto/user.entity';
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
 @Injectable()

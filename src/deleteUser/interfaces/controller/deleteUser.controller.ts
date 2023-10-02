@@ -10,7 +10,7 @@ import { ApiResponseDto } from '../../../share/domain/dto/apiResponse.dto';
  *  @description Archivo controlador responsable de manejar las solicitudes entrantes que llegan a un end point.
  *  En este caso seran posible acceder por medio de metodos http
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
 @ApiTags('delete')

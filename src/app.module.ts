@@ -2,8 +2,8 @@ import { Logger, Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import configuration from './share/domain/resources/env.config';
 import { GlobalModule } from './share/domain/config/global.module';
-import { CreateProductModule } from './createProduct/interfaces/module/createProducts.module';
 import { AuthModule } from './auth/interfaces/module/auth.module';
+import { ProductModule } from './product/interfaces/module/createProducts.module';
 
 @Module({
   providers: [Logger],
@@ -15,7 +15,7 @@ import { AuthModule } from './auth/interfaces/module/auth.module';
     //DeleteUserModule,
     //UpdateUserModule,
     AuthModule,
-    CreateProductModule,
+    ProductModule,
     //UpdateOrderModule,
     //GetOrderModule,
     GlobalModule,

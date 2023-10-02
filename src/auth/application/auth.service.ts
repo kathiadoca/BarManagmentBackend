@@ -22,7 +22,7 @@ import { LoginDto } from '../domain/dto/loginDto';
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
 @Injectable()
@@ -89,7 +89,7 @@ export class AuthService {
         transactionId: this.transactionId,
         response: userDTO,
       });
-      const payload = { id: findUser._id, name: findUser.Nombre };
+      const payload = { id: findUser._id, name: findUser.Usuario, role: findUser.Rol };
       const token = await this.jwtAuthService.sign(payload);
       const user = new LoginAuthDto(
         findUser.Usuario,

@@ -15,23 +15,22 @@ import config from '../../share/domain/resources/env.config';
 import { ApiResponseDto } from '../../share/domain/dto/apiResponse.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { UpdateOrderDTO } from '../domain/dto/updateOrder.dto';
-import { Order, OrderDocument } from '../domain/dto/order.entity';
+import { Productos, ProductosDocument } from '../domain/dto/products.entity';
 
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
 @Injectable()
-export class UpdateOrderService {
-  private readonly logger = new Logger(UpdateOrderService.name);
+export class GetOrderService {
+  private readonly logger = new Logger(GetOrderService.name);
   @Inject('TransactionId') private readonly transactionId: string;
 
   constructor(
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
-    @InjectModel(Order.name) private orderModel: Model<OrderDocument>,
+    @InjectModel(Productos.name) private productModel: Model<ProductosDocument>,
   ) {}
 
   /**
@@ -39,28 +38,24 @@ export class UpdateOrderService {
    *
    *
    */
-  async findByIdAndUpdate(
-    reference: string,
-    status: number,
-  ): Promise<OrderDocument | undefined> {
-    return this.orderModel
-      .findOneAndUpdate({ reference }, { status }, { new: true })
-      .exec();
-  }
+  /* async find(): Promise<ProductosDocument | undefined> {
+    return this.productModel.find().exec();
+  } */
 
-  public async updateOrder(order: UpdateOrderDTO): Promise<ApiResponseDto> {
+  public async getProduct(): Promise<ApiResponseDto> {
     try {
       //Obtiene el usuario de la base de datos
-      const update = await this.findByIdAndUpdate(
-        order.reference,
-        order.status,
-      );
+      const userDb = await this.productModel.find();
+      //if (userDb) throw new ConflictException('User already exists');
+
+      //const userCreated = await this.orderModel.create(reference);
+
       this.logger.log('create order request', {
-        request: `${order.reference} ${order.status}`,
+        request: '',
         transactionId: this.transactionId,
-        response: update,
+        response: userDb,
       });
-      return new ApiResponseDto(HttpStatus.OK, OK);
+      return new ApiResponseDto(HttpStatus.OK, OK, userDb);
     } catch (error) {
       this.logger.error(error.message, {
         transactionId: this.transactionId,

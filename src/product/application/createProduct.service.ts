@@ -16,7 +16,8 @@ import config from '../../share/domain/resources/env.config';
 import { ApiResponseDto } from '../../share/domain/dto/apiResponse.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { User, UserDocument } from '../domain/dto/delete.entity';
+import { Productos, ProductosDocument, ProductosSchema } from '../domain/dto/products.entity';
+import { ProductsDTO } from '../domain/dto/productsDto';
 
 /**
  *  @description Clase servicio responsable recibir el parametro y realizar la logica de negocio.
@@ -25,22 +26,38 @@ import { User, UserDocument } from '../domain/dto/delete.entity';
  *
  */
 @Injectable()
-export class DeleteUserService {
-  private readonly logger = new Logger(DeleteUserService.name);
+export class CreateProductService {
+  private readonly logger = new Logger(CreateProductService.name);
   @Inject('TransactionId') private readonly transactionId: string;
 
   constructor(
     @Inject(config.KEY) private configService: ConfigType<typeof config>,
-    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    @InjectModel(Productos.name) private productsModel: Model<ProductosDocument>,
   ) {}
 
-  public async delete(username: string): Promise<ApiResponseDto> {
+  /**
+   *  @description Metodo para buscar un usuario por 'username' en la base de datos
+   *
+   *
+   */
+  async findOne(id_Producto: string): Promise<ProductosDocument | undefined> {
+    return this.productsModel.findOne({ id_Producto }).exec();
+  }
+
+  public async createOrder(productsDTO: ProductsDTO): Promise<ApiResponseDto> {
     try {
-      const value = Object.values(username).toString();
-      const userDb = await this.userModel.findOneAndDelete({
-        username: value,
+      //Obtiene el usuario de la base de datos
+      const productos = await this.findOne(productsDTO.id_Producto.toString());
+      if (productos) throw new ConflictException('El producto ya existe en la base de datos');
+
+      const productCreated = await this.productsModel.create(productsDTO);
+
+      this.logger.log('Creando producto', {
+        request: productsDTO,
+        transactionId: this.transactionId,
+        response: productCreated,
       });
-      return new ApiResponseDto(HttpStatus.OK, OK);
+      return new ApiResponseDto(HttpStatus.CREATED, OK);
     } catch (error) {
       this.logger.error(error.message, {
         transactionId: this.transactionId,

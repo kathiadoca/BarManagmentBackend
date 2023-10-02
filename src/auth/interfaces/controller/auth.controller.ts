@@ -12,7 +12,7 @@ import { LoginDto } from 'src/auth/domain/dto/loginDto';
  *  @description Archivo controlador responsable de manejar las solicitudes entrantes que llegan a un end point.
  *  En este caso seran posible acceder por medio de metodos http
  *
- *  @author Celula Azure
+ *  @author Luis Torres
  *
  */
 @ApiTags('auth')
@@ -56,7 +56,6 @@ export class AuthController {
   })
   @Post('login')
   async loginUser(@Body() body: LoginDto, @Res() res: Response): Promise<void> {
-    console.log('--->', body);
     const processTime = this.processTimeService.start();
     try {
       this.logger.log('Controller request message', {

@@ -1,12 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsNotEmpty } from 'class-validator';
 
-export class UpdateOrderDTO {
-  @ApiProperty()
-  @IsNotEmpty()
-  reference: string;
+export class IdProductsDTO {
 
   @ApiProperty()
   @IsNotEmpty()
-  status: number;
+  id_Producto: string;
 }

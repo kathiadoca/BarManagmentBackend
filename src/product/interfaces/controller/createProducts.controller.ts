@@ -1,11 +1,22 @@
-import { Body, Controller, Inject, Logger, Put, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Inject,
+  Logger,
+  Post,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Response } from 'express';
 
-import { UpdateUserService } from '../../application/updateUser.service';
+import { CreateProductService } from '../../application/createProduct.service';
 import { ProcessTimeService } from '../../../share/domain/config/processTime.service';
 import { ApiResponseDto } from '../../../share/domain/dto/apiResponse.dto';
-import { UpdateDTO } from 'src/updateUser/domain/dto/updateDto';
+import { JwtAuthGuard } from '../../../auth/application/jwt-auth.guard';
+import { RolesGuard } from '../../../auth/application/roles.guard';
+import { Roles } from '../../../auth/application/roles.decorator';
+import { ProductsDTO } from 'src/product/domain/dto/productsDto';
 
 /**
  *  @description Archivo controlador responsable de manejar las solicitudes entrantes que llegan a un end point.
@@ -14,14 +25,14 @@ import { UpdateDTO } from 'src/updateUser/domain/dto/updateDto';
  *  @author Luis Torres
  *
  */
-@ApiTags('update')
-@Controller('user/update')
-export class UpdateUserController {
-  private readonly logger = new Logger(UpdateUserController.name);
+@ApiTags('create')
+@Controller('products/create')
+export class CreateOrderController {
+  private readonly logger = new Logger(CreateOrderController.name);
   @Inject('TransactionId') private readonly transactionId: string;
 
   constructor(
-    private readonly service: UpdateUserService,
+    private readonly service: CreateProductService,
     private readonly processTimeService: ProcessTimeService,
   ) {}
 
@@ -29,18 +40,20 @@ export class UpdateUserController {
     type: ApiResponseDto,
     status: 200,
   })
-  @Put()
-  async updateUser(
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Post()
+  @Roles('administrador', 'cajero')
+  async createProduct(
     @Res() res: Response,
-    @Body() body: UpdateDTO,
+    @Body() payload: ProductsDTO,
   ): Promise<void> {
     const processTime = this.processTimeService.start();
     try {
       this.logger.log('Controller request message', {
-        request: body,
+        request: payload,
         transactionId: this.transactionId,
       });
-      const serviceResponse = await this.service.update(body);
+      const serviceResponse = await this.service.createOrder(payload);
       res.status(serviceResponse.statusCode).json(serviceResponse);
     } finally {
       this.logger.log(`Consumo del servicio finalizado`, {

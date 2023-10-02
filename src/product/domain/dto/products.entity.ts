@@ -6,7 +6,7 @@ export type ProductosDocument = Productos & Document;
 @Schema({ collection: 'Products' })
 export class Productos extends Document {
   @Prop({ required: true })
-  id_Producto: number;
+  id_Producto: string;
 
   @Prop({ required: true })
   Nombre: string;
